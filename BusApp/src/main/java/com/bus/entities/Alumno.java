@@ -1,12 +1,21 @@
 package com.bus.entities;
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "alumnos")
@@ -16,8 +25,9 @@ public class Alumno {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@Size(min = 10, max = 10)
 	@NotEmpty(message="Ingrese su TIU")
-	@Column(name="tiu", nullable=false, length=25)
+	@Column(name="tiu", nullable=false, unique=true, length=25)
 	private String tiu;
 	
 	@NotEmpty(message="Ingrese su nombre")
@@ -50,6 +60,33 @@ public class Alumno {
 	@NotEmpty(message="Ingrese saldo")
 	@Column(name="saldo", columnDefinition = "Decimal(8,2)", nullable=false)
 	private Double saldo;
+	
+	@OneToMany(mappedBy="alumnoId", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<Clase> clases;
+	
+	@OneToMany(mappedBy="alumnoId", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<Boleto> boletos;
+
+	public Alumno() {
+		clases = new ArrayList<>();
+		boletos = new ArrayList<>();
+	}
+	
+	public List<Boleto> getBoletos() {
+		return boletos;
+	}
+
+	public void setBoletos(List<Boleto> boletos) {
+		this.boletos = boletos;
+	}
+
+	public List<Clase> getClases() {
+		return clases;
+	}
+
+	public void setClases(List<Clase> clases) {
+		this.clases = clases;
+	}
 
 	public Long getId() {
 		return id;
@@ -130,6 +167,7 @@ public class Alumno {
 	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
 	}
+
 	
 	
 	
